@@ -10,13 +10,11 @@ class TodoCard extends StatefulWidget {
     super.key,
     required this.status,
     required this.title,
-    required this.task_status,
   });
   String title;
   bool status;
 
   final index;
-  final task_status;
 
   @override
   State<TodoCard> createState() => _TodoCardState();
@@ -45,9 +43,7 @@ class _TodoCardState extends State<TodoCard> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     height: 130,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Color.fromARGB(255, 42, 42, 42)),
+                    color: Color.fromARGB(255, 42, 42, 42),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -59,8 +55,16 @@ class _TodoCardState extends State<TodoCard> {
                               fontWeight: FontWeight.w300),
                         ),
                         TextField(
-                          cursorColor: Colors.white,
-                          onSubmitted: editfunc,
+                          autofocus: true,
+                          style: TextStyle(color: Colors.white),
+                          cursorColor: Color.fromARGB(31, 255, 255, 255),
+                          onSubmitted: (value) {
+                            setState(() {
+                              
+                          widget.title = myController2.text;
+                            Navigator.pop(context);
+                            });
+                          },
                           controller: myController2,
                         ),
                         Row(
@@ -107,13 +111,7 @@ class _TodoCardState extends State<TodoCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
-                    Text(
-                      "${widget.index + 1} -  ",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 206, 206, 199),
-                        fontSize: 20,
-                      ),
-                    ),
+                    
                     Text(
                       "${widget.title}",
                       style: TextStyle(
@@ -126,10 +124,15 @@ class _TodoCardState extends State<TodoCard> {
                   ]),
                   IconButton(
                       onPressed: () {
-                        widget.task_status(widget.index);
-                        myController.text = widget.title;
+                        setState(() {
+                          AllTasks[widget.index].status =
+                              !AllTasks[widget.index].status;
+               
+                          AllTasks[widget.index].title =
+                              myController2.text; //// need to fix
+                        });
                       },
-                      icon: widget.status
+                      icon: AllTasks[widget.index].status
                           ? Icon(Icons.check, color: Colors.green[500])
                           : Icon(
                               Icons.close,

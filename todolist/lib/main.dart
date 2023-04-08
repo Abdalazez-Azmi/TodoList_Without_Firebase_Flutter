@@ -64,13 +64,6 @@ class _HomePageState extends State<HomePage> {
     return completed;
   }
 
-  task_status(index) {
-    setState(() {
-      AllTasks[index].status = !AllTasks[index].status;
-      // AllTasks[index].title =  //// need to fix
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,6 +87,15 @@ class _HomePageState extends State<HomePage> {
                               style:
                                   TextStyle(fontSize: 22, color: Colors.white)),
                           TextField(
+                            onSubmitted: (value) {
+                              setState(() {
+                                AllTasks.add(
+                                    Tasks(status: false, title: value));
+                                Navigator.pop(context);
+                              });
+                            },
+                            autofocus: true,
+                            style: TextStyle(color: Colors.white),
                             cursorColor: Colors.white,
                             controller: myController,
                           ),
@@ -103,12 +105,16 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               TextButton(
                                   onPressed: () {
-                                    myfunc();
-
                                     Navigator.pop(context);
+                                    myfunc();
 
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
+                                            duration: Duration(seconds: 1),
+                                            action: SnackBarAction(
+                                                label: "dismiss",
+                                                onPressed: () {}),
+                                            backgroundColor: (Colors.black12),
                                             content: Text("1 Item Added .")));
                                   },
                                   child: Text(
@@ -134,6 +140,23 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Color.fromARGB(255, 10, 10, 10),
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    AllTasks.removeRange(0, AllTasks.length);
+                  });
+                },
+                icon: AllTasks.isEmpty
+                    ? Icon(
+                        Icons.delete_forever,
+                        color: Colors.green,
+                      )
+                    : Icon(
+                        Icons.delete_forever,
+                        color: Colors.redAccent,
+                      ))
+          ],
           elevation: 0,
           backgroundColor: Color.fromARGB(255, 5, 4, 4),
           title: Text("TodoList"),
@@ -153,6 +176,7 @@ class _HomePageState extends State<HomePage> {
                                 builder: (BuildContext context) {
                                   return Dialog(
                                     child: Container(
+                                      color: Color.fromARGB(255, 19, 19, 19),
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 14),
                                       height: 150,
@@ -161,8 +185,23 @@ class _HomePageState extends State<HomePage> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Text("Add Task",
-                                              style: TextStyle(fontSize: 22)),
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  color: Colors.white)),
                                           TextField(
+                                            onSubmitted: (value) {
+                                              setState(() {
+                                                AllTasks.add(Tasks(
+                                                    status: false,
+                                                    title: value));
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            autofocus: true,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                            cursorColor: Color.fromARGB(
+                                                31, 255, 255, 255),
                                             controller: myController,
                                           ),
                                           Row(
@@ -173,14 +212,24 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               TextButton(
                                                   onPressed: () {
+                                                    Navigator.pop(context);
                                                     myfunc();
                                                     ScaffoldMessenger.of(
                                                             context)
                                                         .showSnackBar(SnackBar(
+                                                            duration: Duration(
+                                                                seconds: 1),
+                                                            action:
+                                                                SnackBarAction(
+                                                                    label:
+                                                                        "dismiss",
+                                                                    onPressed:
+                                                                        () {}),
+                                                            backgroundColor:
+                                                                (Colors
+                                                                    .black12),
                                                             content: Text(
                                                                 "1 Item Added .")));
-
-                                                    Navigator.pop(context);
                                                   },
                                                   child: Text(
                                                     "Add Task",
@@ -209,8 +258,7 @@ class _HomePageState extends State<HomePage> {
                                   color: Color.fromARGB(255, 252, 252, 252)),
                             ),
                           )),
-                      Container(
-                          child: Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
@@ -225,9 +273,8 @@ class _HomePageState extends State<HomePage> {
                                 decoration: TextDecoration.lineThrough,
                                 fontSize: 20),
                           ),
-                     
                         ],
-                      ))
+                      )
                     ]))
             : Container(
                 width: double.infinity,
@@ -258,13 +305,17 @@ class _HomePageState extends State<HomePage> {
                                     setState(() {
                                       AllTasks.removeAt(index);
                                     });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                " Todo Number ${index + 1} was removed Successfully .")));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      action: SnackBarAction(
+                                          label: "dismiss", onPressed: () {}),
+                                      content: Text(
+                                          " Todo Number ${index + 1} was removed Successfully ."),
+                                      backgroundColor: (Colors.black12),
+                                    ));
                                   },
                                   child: TodoCard(
-                                    task_status: task_status,
                                     index: index,
                                     status: AllTasks[index].status,
                                     title: AllTasks[index].title,
